@@ -1,42 +1,84 @@
 :root {
+    /* Light Mode Variables */
     --primary-color: #4a90e2;
     --button-hover: #357abd;
     --bg-color: #f4f7f6;
+    --container-bg: #ffffff;
+    --text-primary: #333333;
+    --text-secondary: #888888;
+    --ball-placeholder: #cccccc;
+    
+    /* Lotto Ball Colors */
     --ball-yellow: #fbc400;
     --ball-blue: #69c8f2;
     --ball-red: #ff7272;
     --ball-grey: #aaa;
     --ball-green: #b0d840;
+
+    --toggle-bg: #e0e0e0;
+    --toggle-icon: #ffa500;
+}
+
+/* Dark Mode Overrides */
+[data-theme='dark'] {
+    --bg-color: #1a1a1a;
+    --container-bg: #2d2d2d;
+    --text-primary: #f0f0f0;
+    --text-secondary: #aaaaaa;
+    --ball-placeholder: #555555;
+    --toggle-bg: #444444;
+    --toggle-icon: #f1c40f;
 }
 
 body {
     font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
     background-color: var(--bg-color);
+    color: var(--text-primary);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
-    background: white;
+    background: var(--container-bg);
     padding: 3rem;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     text-align: center;
     max-width: 500px;
     width: 90%;
+    position: relative;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--toggle-bg);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
 }
 
 h1 {
     margin: 0;
-    color: #333;
+    color: var(--text-primary);
     font-size: 2rem;
 }
 
 .subtitle {
-    color: #888;
+    color: var(--text-secondary);
     margin-bottom: 2rem;
 }
 
@@ -66,7 +108,7 @@ h1 {
 }
 
 .placeholder {
-    color: #ccc;
+    color: var(--ball-placeholder);
     font-style: italic;
 }
 

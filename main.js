@@ -1,13 +1,31 @@
+// Theme Management
+const themeToggle = document.getElementById('theme-toggle');
+const currentTheme = localStorage.getItem('theme') || 'light';
+
+// Initialize theme
+document.documentElement.setAttribute('data-theme', currentTheme);
+updateToggleIcon(currentTheme);
+
+themeToggle.addEventListener('click', () => {
+    const targetTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', targetTheme);
+    localStorage.setItem('theme', targetTheme);
+    updateToggleIcon(targetTheme);
+});
+
+function updateToggleIcon(theme) {
+    themeToggle.innerText = theme === 'light' ? '🌙' : '☀️';
+}
+
+// Lotto Drawing Logic
 document.getElementById('draw-btn').addEventListener('click', function() {
     const container = document.getElementById('lotto-container');
     const button = this;
 
-    // Clear previous results and show drawing state
     container.innerHTML = '';
     button.disabled = true;
     button.innerText = '추첨 중...';
 
-    // Lotto number generation logic (1-45, 6 unique numbers, sorted)
     const numbers = [];
     while (numbers.length < 6) {
         const num = Math.floor(Math.random() * 45) + 1;
@@ -17,7 +35,6 @@ document.getElementById('draw-btn').addEventListener('click', function() {
     }
     numbers.sort((a, b) => a - b);
 
-    // Render with sequential animation
     let index = 0;
     const interval = setInterval(() => {
         if (index < numbers.length) {
@@ -32,7 +49,7 @@ document.getElementById('draw-btn').addEventListener('click', function() {
             button.disabled = false;
             button.innerText = '번호 다시 추첨하기';
         }
-    }, 400); // 400ms delay between balls for dramatic effect
+    }, 400);
 });
 
 function getRangeClass(num) {
