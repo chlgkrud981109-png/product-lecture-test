@@ -1,1 +1,105 @@
-/* Add styles here */
+:root {
+    --primary-color: #4a90e2;
+    --button-hover: #357abd;
+    --bg-color: #f4f7f6;
+    --ball-yellow: #fbc400;
+    --ball-blue: #69c8f2;
+    --ball-red: #ff7272;
+    --ball-grey: #aaa;
+    --ball-green: #b0d840;
+}
+
+body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background: white;
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+}
+
+h1 {
+    margin: 0;
+    color: #333;
+    font-size: 2rem;
+}
+
+.subtitle {
+    color: #888;
+    margin-bottom: 2rem;
+}
+
+.lotto-balls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 2.5rem;
+    min-height: 60px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.ball {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.placeholder {
+    color: #ccc;
+    font-style: italic;
+}
+
+.draw-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+}
+
+.draw-button:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+}
+
+.draw-button:active {
+    transform: translateY(0);
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Ball colors by range */
+.range-10 { background-color: var(--ball-yellow); }
+.range-20 { background-color: var(--ball-blue); }
+.range-30 { background-color: var(--ball-red); }
+.range-40 { background-color: var(--ball-grey); }
+.range-max { background-color: var(--ball-green); }
