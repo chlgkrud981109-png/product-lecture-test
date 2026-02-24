@@ -1,8 +1,11 @@
-// Theme Management
-const themeToggle = document.getElementById('theme-toggle');
-const currentTheme = localStorage.getItem('theme') || 'light';
+// Teachable Machine 모델 URL
+const URL = "https://teachablemachine.withgoogle.com/models/TzZBuzJD-/";
 
-// Initialize theme
+let model, maxPredictions;
+
+// 다크 모드 초기화
+const themeToggle = document.getElementById('theme-toggle');
+const currentTheme = localStorage.getItem('theme') || 'dark';
 document.documentElement.setAttribute('data-theme', currentTheme);
 updateToggleIcon(currentTheme);
 
@@ -17,136 +20,110 @@ function updateToggleIcon(theme) {
     themeToggle.innerText = theme === 'light' ? '🌙' : '☀️';
 }
 
-// Game Personality Test Logic
-const questions = [
-    {
-        question: "어떤 종류의 긴장감을 즐기시나요?",
-        options: [
-            { text: "빠른 반응이 필요한 긴박한 전투", score: { action: 2, strategy: 0 } },
-            { text: "차분하게 생각하고 결정하는 심리전", score: { action: 0, strategy: 2 } }
-        ]
-    },
-    {
-        question: "게임에서 가장 중요하게 생각하는 가치는?",
-        options: [
-            { text: "화려한 액션과 타격감", score: { action: 2, story: 0 } },
-            { text: "몰입감 넘치는 스토리와 세계관", score: { action: 0, story: 2 } }
-        ]
-    },
-    {
-        question: "어떤 플레이 방식을 선호하시나요?",
-        options: [
-            { text: "다른 유저와의 치열한 경쟁", score: { competitive: 2, relaxed: 0 } },
-            { text: "혼자 혹은 친구와 즐기는 여유로운 플레이", score: { competitive: 0, relaxed: 2 } }
-        ]
+// 모델 로드 함수 (샘플 코드 기반)
+async function initModel() {
+    const modelURL = URL + "model.json";
+    const metadataURL = URL + "metadata.json";
+
+    try {
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+        console.log("주술회전 모델 로드 완료");
+    } catch (e) {
+        console.error("모델 로드 중 오류 발생", e);
     }
-];
+}
 
-const results = [
-    {
-        type: "competitive-action",
-        title: "승부욕 넘치는 스트라이커",
-        description: "당신은 빠른 판단력과 경쟁을 즐기는 타입입니다! 짜릿한 승리를 맛볼 수 있는 게임을 추천합니다.",
-        games: ["리그 오브 레전드", "오버워치 2", "발로란트"]
-    },
-    {
-        type: "relaxed-action",
-        title: "자유로운 모험가",
-        description: "화려한 액션을 좋아하지만, 타인과의 경쟁보다는 자신만의 속도로 즐기는 것을 선호하시네요.",
-        games: ["엘든 링", "몬스터 헌터", "데빌 메이 크라이"]
-    },
-    {
-        type: "competitive-strategy",
-        title: "냉철한 전략가",
-        description: "상대방의 수를 읽고 치밀한 계획으로 승리하는 것에서 쾌감을 느끼는 타입입니다.",
-        games: ["스타크래프트", "TFT (전략적 팀 전투)", "하스스톤"]
-    },
-    {
-        type: "relaxed-story",
-        title: "감성적인 스토리텔러",
-        description: "게임의 분위기와 이야기를 중요하게 생각하며, 여유롭게 세계관에 몰입하는 것을 즐기시네요.",
-        games: ["모동숲", "스타듀 밸리", "디트로이트: 비컴 휴먼"]
-    }
-];
+// 이미지 핸들링 요소
+const imageInput = document.getElementById('image-input');
+const faceImage = document.getElementById('face-image');
+const uploadArea = document.getElementById('upload-area');
+const previewArea = document.getElementById('preview-area');
+const loading = document.getElementById('loading');
+const resultArea = document.getElementById('result-area');
+const restartBtn = document.getElementById('restart-btn');
 
-let currentQuestionIndex = 0;
-let scores = { action: 0, strategy: 0, story: 0, competitive: 0, relaxed: 0 };
-
-const testContainer = document.getElementById('test-container');
-const startBtn = document.getElementById('start-btn');
-
-startBtn.addEventListener('click', () => {
-    if (startBtn.innerText === '테스트 시작하기' || startBtn.innerText === '다시 테스트하기') {
-        startTest();
+imageInput.addEventListener('change', (e) => {
+    if (e.target.files && e.target.files[0]) {
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            faceImage.src = event.target.result;
+            uploadArea.style.display = 'none';
+            previewArea.style.display = 'block';
+            loading.style.display = 'block';
+            resultArea.style.display = 'none';
+            
+            // 이미지가 로드된 후 예측 수행
+            faceImage.onload = async () => {
+                await predict();
+                loading.style.display = 'none';
+                resultArea.style.display = 'block';
+                restartBtn.style.display = 'inline-block';
+            };
+        };
+        reader.readAsDataURL(e.target.files[0]);
     }
 });
 
-function startTest() {
-    currentQuestionIndex = 0;
-    scores = { action: 0, strategy: 0, story: 0, competitive: 0, relaxed: 0 };
-    showQuestion();
-    startBtn.style.display = 'none';
-}
-
-function showQuestion() {
-    const q = questions[currentQuestionIndex];
-    testContainer.innerHTML = `
-        <div class="question-box">
-            <div class="question-number">Q${currentQuestionIndex + 1}</div>
-            <div class="question-text">${q.question}</div>
-            <div class="options-container">
-                ${q.options.map((opt, i) => `
-                    <button class="option-btn" onclick="selectOption(${i})">${opt.text}</button>
-                `).join('')}
-            </div>
-        </div>
-    `;
-}
-
-window.selectOption = (optionIndex) => {
-    const q = questions[currentQuestionIndex];
-    const selectedOption = q.options[optionIndex];
+// 예측 함수 (샘플 코드의 predict 로직을 파일 업로드용으로 변형)
+async function predict() {
+    if (!model) await initModel();
     
-    // Add scores
-    for (let key in selectedOption.score) {
-        scores[key] += selectedOption.score[key];
-    }
+    // 모델 예측 (이미지 요소를 직접 전달)
+    const prediction = await model.predict(faceImage);
+    
+    // 일치율 순으로 정렬
+    prediction.sort((a, b) => b.probability - a.probability);
 
-    currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
-        showQuestion();
-    } else {
-        showResult();
-    }
-};
+    const topResult = prediction[0];
+    
+    // 캐릭터별 추가 설명
+    const characterInfo = {
+        "이타도리 유지": "넘쳐나는 주력과 엄청난 신체 능력! 당신은 이타도리 유지와 닮았습니다.",
+        "후시구로 메구미": "냉철한 판단력과 식신을 다루는 재능. 당신은 후시구로 메구미와 닮았습니다.",
+        "쿠기사키 노바라": "확고한 자아와 거침없는 성격! 당신은 쿠기사키 노바라와 닮았습니다.",
+        "고죠 사토루": "말 그대로 '최강'. 압도적인 분위기를 풍기는 당신은 고죠 사토루입니다.",
+        "게토 스구루": "차분하고 논리적인 면모. 당신은 게토 스구루와 닮은 분위기를 풍깁니다.",
+        "젠인 마키": "주력이 없어도 실력으로 증명하는 강인함! 당신은 마키와 닮았습니다.",
+        "이누마키 토게": "말 한마디에 담긴 무게. 당신은 이누마키 토게와 닮았습니다.",
+        "판다": "누구보다 듬직한 동료! 당신은 판다와 닮았군요."
+    };
 
-function showResult() {
-    let result;
-    if (scores.competitive > scores.relaxed) {
-        if (scores.action >= scores.strategy) {
-            result = results[0]; // competitive-action
-        } else {
-            result = results[2]; // competitive-strategy
-        }
-    } else {
-        if (scores.action >= scores.story) {
-            result = results[1]; // relaxed-action
-        } else {
-            result = results[3]; // relaxed-story
-        }
-    }
-
-    testContainer.innerHTML = `
-        <div class="result-box">
-            <div class="result-title">${result.title}</div>
-            <div class="result-description">${result.description}</div>
-            <div class="recommend-label">추천 게임:</div>
-            <div class="game-list">
-                ${result.games.map(game => `<span class="game-tag">${game}</span>`).join('')}
-            </div>
-        </div>
+    let resultHTML = `
+        <div class="result-title">당신과 가장 닮은 주술사는...</div>
+        <div class="result-name">${topResult.className}</div>
+        <p class="subtitle">${characterInfo[topResult.className] || "주술고전의 자랑스러운 학생이군요!"}</p>
+        <div class="prediction-bar-container">
     `;
 
-    startBtn.innerText = '다시 테스트하기';
-    startBtn.style.display = 'inline-block';
+    // 상위 5개 예측치 바 생성 (샘플 코드의 labelContainer 역할)
+    for (let i = 0; i < Math.min(5, maxPredictions); i++) {
+        const prob = (prediction[i].probability * 100).toFixed(0);
+        resultHTML += `
+            <div class="bar-item">
+                <div class="bar-label">
+                    <span>${prediction[i].className}</span>
+                    <span>${prob}%</span>
+                </div>
+                <div class="bar-bg">
+                    <div class="bar-fill ${i === 0 ? 'top' : ''}" style="width: ${prob}%"></div>
+                </div>
+            </div>
+        `;
+    }
+
+    resultHTML += `</div>`;
+    resultArea.innerHTML = resultHTML;
 }
+
+// 다시 하기 버튼
+restartBtn.addEventListener('click', () => {
+    uploadArea.style.display = 'block';
+    previewArea.style.display = 'none';
+    resultArea.style.display = 'none';
+    restartBtn.style.display = 'none';
+    imageInput.value = '';
+});
+
+// 페이지 로드 시 모델 미리 로드
+initModel();

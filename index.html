@@ -3,51 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>나의 게임 성향 테스트</title>
+    <title>주술회전 캐릭터 닮은꼴 테스트</title>
     <link rel="stylesheet" href="style.css">
+    <!-- TensorFlow.js and Teachable Machine Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 </head>
 <body>
     <div class="container">
         <button id="theme-toggle" class="theme-toggle" aria-label="다크 모드 전환">🌓</button>
-        <h1>나의 게임 성향 테스트</h1>
-        <p class="subtitle">나에게 딱 맞는 게임 장르를 찾아보세요!</p>
+        <h1>주술회전 닮은꼴 테스트</h1>
+        <p class="subtitle">도쿄 도립 주술 고등전문학교 학생 중 나는 누구와 닮았을까?</p>
         
         <div id="test-container" class="test-content">
-            <!-- Questions or Results will be injected here -->
-            <div class="intro-text">간단한 질문을 통해 당신의 게임 스타일을 분석합니다.</div>
+            <div id="upload-area" class="upload-box">
+                <input type="file" id="image-input" accept="image/*" hidden>
+                <label for="image-input" class="upload-label">
+                    <div class="upload-icon">📸</div>
+                    <span>얼굴 사진을 업로드하세요</span>
+                </label>
+            </div>
+            
+            <div id="preview-area" class="preview-box" style="display: none;">
+                <img id="face-image" src="" alt="업로드된 사진">
+                <div id="loading" class="loading-spinner" style="display: none;">주력 분석 중...</div>
+            </div>
+
+            <div id="result-area" class="result-box" style="display: none;">
+                <!-- 결과가 여기에 삽입됩니다 -->
+            </div>
         </div>
 
-        <button id="start-btn" class="action-button">테스트 시작하기</button>
-
-        <section class="partnership-section">
-            <h2>제휴 문의</h2>
-            <form action="https://formspree.io/f/mpqjlvbj" method="POST" class="contact-form">
-                <div class="form-group">
-                    <label for="name">성함/업체명</label>
-                    <input type="text" id="name" name="name" required placeholder="홍길동">
-                </div>
-                <div class="form-group">
-                    <label for="email">이메일 주소</label>
-                    <input type="email" id="email" name="_replyto" required placeholder="example@email.com">
-                </div>
-                <div class="form-group">
-                    <label for="message">문의 내용</label>
-                    <textarea id="message" name="message" required placeholder="문의하실 내용을 입력해주세요."></textarea>
-                </div>
-                <button type="submit" class="submit-button">문의 보내기</button>
-            </form>
-        </section>
-
-        <section class="comments-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--toggle-bg);">
-            <div id="cusdis_thread"
-              data-host="https://cusdis.com"
-              data-app-id="737fb9fd-2f99-4a45-b0d1-25e582878d03"
-              data-page-id="game_test_main"
-              data-page-url="https://product-test-662d0.web.app"
-              data-page-title="나의 게임 성향 테스트">
-            </div>
-            <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
-        </section>
+        <button id="restart-btn" class="action-button" style="display: none;">다시 테스트하기</button>
     </div>
     <script src="main.js"></script>
 </body>
