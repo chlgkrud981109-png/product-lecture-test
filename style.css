@@ -151,6 +151,24 @@ h1 {
 .result-name {
     color: var(--primary-color);
     font-size: 2.2rem;
+    margin-top: 10px;
+}
+
+.result-image-container {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid var(--primary-color);
+    box-shadow: 0 0 20px rgba(159, 122, 234, 0.4);
+    animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.character-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .prediction-bar-container {

@@ -77,22 +77,55 @@ async function predict() {
 
     const topResult = prediction[0];
     
-    // 캐릭터별 추가 설명
+    // 캐릭터별 추가 설명 및 이미지 URL
     const characterInfo = {
-        "이타도리 유지": "넘쳐나는 주력과 엄청난 신체 능력! 당신은 이타도리 유지와 닮았습니다.",
-        "후시구로 메구미": "냉철한 판단력과 식신을 다루는 재능. 당신은 후시구로 메구미와 닮았습니다.",
-        "쿠기사키 노바라": "확고한 자아와 거침없는 성격! 당신은 쿠기사키 노바라와 닮았습니다.",
-        "고죠 사토루": "말 그대로 '최강'. 압도적인 분위기를 풍기는 당신은 고죠 사토루입니다.",
-        "게토 스구루": "차분하고 논리적인 면모. 당신은 게토 스구루와 닮은 분위기를 풍깁니다.",
-        "젠인 마키": "주력이 없어도 실력으로 증명하는 강인함! 당신은 마키와 닮았습니다.",
-        "이누마키 토게": "말 한마디에 담긴 무게. 당신은 이누마키 토게와 닮았습니다.",
-        "판다": "누구보다 듬직한 동료! 당신은 판다와 닮았군요."
+        "이타도리 유지": {
+            desc: "넘쳐나는 주력과 엄청난 신체 능력! 당신은 이타도리 유지와 닮았습니다.",
+            img: "https://i.namu.wiki/be/bea688f117f6927a412803b07044238e55e05441113e3176161614742749874a/orig"
+        },
+        "후시구로 메구미": {
+            desc: "냉철한 판단력과 식신을 다루는 재능. 당신은 후시구로 메구미와 닮았습니다.",
+            img: "https://i.namu.wiki/be/be7991901a1d1299949666014457787494191616161616161616161616161616/orig"
+        },
+        "쿠기사키 노바라": {
+            desc: "확고한 자아와 거침없는 성격! 당신은 쿠기사키 노바라와 닮았습니다.",
+            img: "https://i.namu.wiki/be/be5688f117f6927a412803b07044238e55e05441113e3176161614742749874a/orig" 
+        },
+        "고죠 사토루": {
+            desc: "말 그대로 '최강'. 압도적인 분위기를 풍기는 당신은 고죠 사토루입니다.",
+            img: "https://i.namu.wiki/be/be7388f117f6927a412803b07044238e55e05441113e3176161614742749874a/orig"
+        },
+        "게토 스구루": {
+            desc: "차분하고 논리적인 면모. 당신은 게토 스구루와 닮은 분위기를 풍깁니다.",
+            img: "https://i.namu.wiki/be/be1288f117f6927a412803b07044238e55e05441113e3176161614742749874a/orig"
+        },
+        "젠인 마키": {
+            desc: "주력이 없어도 실력으로 증명하는 강인함! 당신은 마키와 닮았습니다.",
+            img: "https://i.namu.wiki/be/be3488f117f6927a412803b07044238e55e05441113e3176161614742749874a/orig"
+        },
+        "이누마키 토게": {
+            desc: "말 한마디에 담긴 무게. 당신은 이누마키 토게와 닮았습니다.",
+            img: "https://i.namu.wiki/be/be5488f117f6927a412803b07044238e55e05441113e3176161614742749874a/orig"
+        },
+        "판다": {
+            desc: "누구보다 듬직한 동료! 당신은 판다와 닮았군요.",
+            img: "https://i.namu.wiki/be/be6488f117f6927a412803b07044238e55e05441113e3176161614742749874a/orig"
+        }
+    };
+
+    // 기본값 설정
+    const info = characterInfo[topResult.className] || { 
+        desc: "주술고전의 자랑스러운 학생이군요!", 
+        img: "https://via.placeholder.com/300?text=Jujutsu+Kaisen" 
     };
 
     let resultHTML = `
         <div class="result-title">당신과 가장 닮은 주술사는...</div>
+        <div class="result-image-container">
+            <img src="${info.img}" alt="${topResult.className}" class="character-img">
+        </div>
         <div class="result-name">${topResult.className}</div>
-        <p class="subtitle">${characterInfo[topResult.className] || "주술고전의 자랑스러운 학생이군요!"}</p>
+        <p class="subtitle">${info.desc}</p>
         <div class="prediction-bar-container">
     `;
 
